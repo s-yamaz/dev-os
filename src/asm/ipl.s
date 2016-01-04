@@ -31,6 +31,23 @@ entry:
     movw    %ax, %ds
     movw    %ax, %es
 
+    movw    $0x0820, %ax
+    movw    %ax, %es
+    movb    $0x00, %ch          # Cylinder 0
+    movb    $0x00, %dh          # Head 0
+    movb    $0x02, %cl          # Sector 2
+
+    movb    $0x02, %ah          # ディスク読み込み
+    movb    $0x01, %al          # 1セクタ読み込む
+    movw    $0x00, %bx          # ES:BX Data buffer(0x8200に読み込む)
+    movb    $0x00, %dl          # Aドライブ
+    int     $0x13               # BIOS interrupt call
+    jc      error
+fin:
+    hlt
+    jmp    fin
+
+error:
     movw    $msg, %si
 putloop:
     movb    (%si), %al
@@ -41,9 +58,7 @@ putloop:
     movw    $10, %bx                # カラーコード 15: white
     int     $0x10                   # ビデオBIOS呼び出し
     jmp    putloop
-fin:
-    hlt
-    jmp    fin
 
 .data
-msg: .string "Hello, World!\n"
+msg: 
+    .string "\n\nload error!\n"
