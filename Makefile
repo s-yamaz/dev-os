@@ -7,6 +7,7 @@ SOSSRC=./src/asm/sos.s
 SOSSYS=./bin/sos.sys
 SOSLST=./bin/sos.lst
 LINKER=./src/asm/binary.ls
+SOSLS=./src/asm/sos.ls
 IPL=./bin/ipl.bin
 
 all: $(IPLSRC)
@@ -19,8 +20,8 @@ os.img: $(IPL)
 	mcopy $(SOSSYS) -i $(IMG) ::
 
 sos.sys: $(SOSSRC) $(LINKER)
-	gcc -nostdlib -o $(SOSSYS) -T$(LINKER) $(SOSSRC)
-	gcc -T$(LINKER) -c -g -Wa,-a,-ad $(SOSSRC) > $(SOSLST)
+	gcc -nostdlib -o $(SOSSYS) -T$(SOSLS) $(SOSSRC)
+	gcc -T$(SOSLS) -c -g -Wa,-a,-ad $(SOSSRC) > $(SOSLST)
 
 ipl.bin: $(IPLSRC) $(LINKER)
 	gcc -nostdlib -o $(IPL) -T$(LINKER) $(IPLSRC)
