@@ -68,6 +68,8 @@ next:
     addb    $1, %ch             # シリンダを一つすすめる
     cmpb    $CYLS, %ch          # 読み込んだシリンダ数の比較
     jb      readloop            # ch < cylsなら読み込み
+_load_fin:                      # 読み込み終了OS本体へ
+    movb    $CYLS, (0x0ff0)     # マーカー代わりにCYLSの値をメモリの0x0ff0番地へ書き込む
     jmp     0xc200              # 0x8000 + 0x4200 = 0xc200
 
 fin:
