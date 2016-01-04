@@ -68,6 +68,7 @@ next:
     addb    $1, %ch             # シリンダを一つすすめる
     cmpb    $CYLS, %ch          # 読み込んだシリンダ数の比較
     jb      readloop            # ch < cylsなら読み込み
+    jmp     0xc200              # 0x8000 + 0x4200 = 0xc200
 
 fin:
     hlt
