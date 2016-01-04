@@ -36,7 +36,7 @@ entry:
     movb    $0x00, %ch          # Cylinder 0
     movb    $0x00, %dh          # Head 0
     movb    $0x02, %cl          # Sector 2
-
+readloop:
     movw    $0x00, %si          # 失敗回数を数えるレジスタ
 retry:
     movb    $0x02, %ah          # ディスク読み込み
@@ -44,7 +44,7 @@ retry:
     movw    $0x00, %bx          # ES:BX Data buffer(0x8200に読み込む)
     movb    $0x00, %dl          # Aドライブ
     int     $0x13               # BIOS interrupt call
-    jnc     fin                 # エラーが起きなければfinへ
+    jnc     next                # エラーが起きなければnextへ
     addw    $1, %si             # 失敗なのでカウンタに1加算
     cmpw    $5, %si             # 失敗回数と5(最大失敗回数)を比較
     jae     error               # 失敗回数 >= 5 ならerrorへ
@@ -52,6 +52,13 @@ retry:
     movb    $0x00, %dl          # Aドライブ
     int     $0x13               # BIOS interrupt call ドライブのリセット
     jmp     retry
+next:
+    movw    %es, %ax            # アドレスを0x200進める
+    addw    $0x0020, %ax        
+    movw    %ax, %es            # addw $0x0020, %siとかけないので
+    addb    $1, %cl             # セクタを1進める
+    cmpb    $18, %cl            # 18と比較
+    jbe     readloop            # clが18以下ならreadloopへ
 fin:
     hlt
     jmp    fin
