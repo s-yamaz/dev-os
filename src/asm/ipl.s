@@ -1,3 +1,4 @@
+.equ CYLS, 10                   # 読み込むシリンダ数
 .code16
 .text
     jmp entry
@@ -59,6 +60,15 @@ next:
     addb    $1, %cl             # セクタを1進める
     cmpb    $18, %cl            # 18と比較
     jbe     readloop            # clが18以下ならreadloopへ
+    movb    $1, %cl             # clが18以上ならセクタを1に戻す
+    addb    $1, %dh             # ヘッドに1を加算し裏面へ
+    cmpb    $2, %dh
+    jb      readloop            # dh < 2なら読み込みへ
+    movb    $0x00, %dh          # dh >= 2ならヘッダを0に戻す
+    addb    $1, %ch             # シリンダを一つすすめる
+    cmpb    $CYLS, %ch          # 読み込んだシリンダ数の比較
+    jb      readloop            # ch < cylsなら読み込み
+
 fin:
     hlt
     jmp    fin
