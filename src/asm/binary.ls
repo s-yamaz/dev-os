@@ -1,12 +1,10 @@
-OUTPUT_FORMAT(binary);
-OUTPUT_ARCH(i386);
-
+OUTPUT_FORMAT("binary");
 IPLBASE = 0x7c00;
 
-SECTIONS{
-    .= IPLBASE;
+SECTIONS {
+    . = IPLBASE;
     .text   :{*(.text)}
     .data   :{*(.data)}
-    .= IPLBASE + 510;
+    . = IPLBASE + 510;
     .sign   :{SHORT(0xaa55)}
 }

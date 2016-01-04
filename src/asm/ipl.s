@@ -1,6 +1,6 @@
 .code16
 .text
-    jump entry
+    jmp entry
 
     # FAT12のための記述
     .byte   0x90
@@ -38,12 +38,12 @@ putloop:
     cmpb    $0, %al
     je      fin
     movb    $0x0e, %ah              # 一文字表示BIOSコール
-    movb    $10, %bx                # カラーコード 15: white
+    movw    $10, %bx                # カラーコード 15: white
     int     $0x10                   # ビデオBIOS呼び出し
-    jump    putloop
+    jmp    putloop
 fin:
     hlt
-    jump    fin
+    jmp    fin
 
 .data
 msg: .string "Hello, World!\n"
