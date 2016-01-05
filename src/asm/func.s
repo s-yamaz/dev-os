@@ -2,6 +2,6 @@
 .section .text
 .global io_hlt
 
-io_htl:
+io_hlt:
     hlt
     ret

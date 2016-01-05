@@ -1,34 +1,45 @@
 #img: $(IMG:%.img=%.o)
 #	ld $^ -T binary.ls -o $(IMG)
-IMG=./img/sos.img
-IPLSRC=./src/asm/ipl.s
-IPLLST=./bin/ipl.lst
-SOSSRC=./src/asm/sos.s
-SOSSYS=./bin/sos.sys
-SOSLST=./bin/sos.lst
-LINKER=./src/asm/binary.ls
-SOSLS=./src/asm/sos.ls
-IPL=./bin/ipl.bin
+OSNAME=sos
+
+ASRC=./src/asm
+CSRC=./src/c
+OBJ=./bin
+LS=./ls
+
+IMG=./img/$(OSNAME).img
+IPLSRC=$(ASRC)/ipl.s
+SOSSYS=$(OBJ)/sos.sys
+SOSSRC=$(ASRC)/sos.s
+IPLLS=$(LS)/ipl.ls
+HEADLS=$(LS)/asmhead.ls
+IPL=$(OBJ)/ipl.bin
+
+BINOPT=-nostdlib -Wl,--oformat=binary
 
 all: $(IPLSRC)
 	make ipl
+	make sos
 	make img
-	#make run
 
-os.img: $(IPL)
+$(IMG): $(IPL) $(SOSSYS)
 	mformat -f 1440 -C -B $(IPL) -i $(IMG) ::
 	mcopy $(SOSSYS) -i $(IMG) ::
 
-sos.sys: $(SOSSRC) $(LINKER)
-	gcc -nostdlib -o $(SOSSYS) -T$(SOSLS) $(SOSSRC)
-	gcc -T$(SOSLS) -c -g -Wa,-a,-ad $(SOSSRC) > $(SOSLST)
+$(SOSSYS): $(ASRC)/asmhead.s $(ASRC)/func.s $(CSRC)/bootpack.c
+	gcc -m32 $(ASRC)/asmhead.s -nostdlib -T$(HEADLS) -o $(OBJ)/asmhead.bin
+	gcc -m32 $(CSRC)/*.c $(BINOPT) -c -o $(OBJ)/boot.o
+	as --32 $(ASRC)/func.s -o $(OBJ)/func.o
+	ld -static -m elf_i386 -o $(OBJ)/boot.bin -e SosMain --oformat=binary $(OBJ)/boot.o $(OBJ)/func.o
+	cat $(OBJ)/asmhead.bin $(OBJ)/boot.bin > $(SOSSYS)
 
-ipl.bin: $(IPLSRC) $(LINKER)
-	gcc -nostdlib -o $(IPL) -T$(LINKER) $(IPLSRC)
-	gcc -T$(LINKER) -c -g -Wa,-a,-ad $(IPLSRC) > $(IPLLST)
+$(IPL): $(IPLSRC)
+	gcc -nostdlib -o $(IPL) -T$(IPLLS) $(IPLSRC)
 
 run: $(IMG)
 	qemu -m 32 -localtime -vga std -fda $(IMG)
 
-ipl:;	make ipl.bin
-img:;	make os.img
+ipl:;	make $(IPL)
+sos:;	make $(SOSSYS)
+img:;	make $(IMG)
+clean:;	rm $(OBJ)/*
