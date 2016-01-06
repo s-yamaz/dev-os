@@ -20,7 +20,7 @@ BINOPT=-nostdlib -Wl,--oformat=binary
 all: $(IPLSRC)
 	make ipl
 	make sos
-	make img
+	make os.img
 
 $(IMG): $(IPL) $(SOSSYS)
 	mformat -f 1440 -C -B $(IPL) -i $(IMG) ::
@@ -41,5 +41,7 @@ run: $(IMG)
 
 ipl:;	make $(IPL)
 sos:;	make $(SOSSYS)
-img:;	make $(IMG)
-clean:;	rm $(OBJ)/*
+os.img:;	make $(IMG)
+clean:	
+	rm $(OBJ)/*
+	rm $(IMG)

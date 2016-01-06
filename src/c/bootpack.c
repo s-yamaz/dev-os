@@ -1,10 +1,12 @@
 void io_hlt(void);
-void write_mem8(int addr, int data);
 
 void SosMain(void) {
     int i;
-    for (i = 0xa0000; i<= 0xaffff; i++) {
-        write_mem8(i, 15);
+    char *p;
+
+    for (i = 0xa0000; i <= 0xaffff; i++) {
+        p = (char*) i; /* 番地を代入 */
+        *p = i & 0x0f;
     }
     for (;;) {
         io_hlt();
