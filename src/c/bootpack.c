@@ -26,15 +26,23 @@ void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize,
         unsigned char c, int x0, int y0, int x1, int y1);
 
+struct BOOTINFO {
+    char cyls, leds, vmode, reserve;
+    short scrnx, scrny;
+    char *vram;
+};
+
 void SosMain(void) {
     char *vram;
     int xsize, ysize;
+    struct BOOTINFO *binfo;
 
     init_palette(); /* 色パレットを設定 */
 
-    vram = (char *) 0xa0000;
-    xsize = 320;
-    ysize = 200;
+    binfo = (struct BOOTINFO *) 0x0ff0;
+    xsize = (*binfo).scrnx;
+    ysize = (*binfo).scrny;
+    vram = (*binfo).vram;
 
     boxfill8(vram, xsize, COL8_008484, 0, 0, xsize - 1, ysize - 29);
     boxfill8(vram, xsize, COL8_C6C6C6, 0, ysize - 28, xsize - 1, ysize - 28);
