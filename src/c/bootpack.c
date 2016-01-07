@@ -41,6 +41,14 @@ void SosMain(void) {
     boxfill8(vram, xsize, COL8_FFFFFF, 0, ysize - 27, xsize - 1, ysize - 27);
     boxfill8(vram, xsize, COL8_C6C6C6, 0, ysize - 26, xsize - 1, ysize - 1);
 
+    //
+    boxfill8(vram, xsize, COL8_FFFFFF, 3, ysize - 24, 59, ysize - 24);
+    boxfill8(vram, xsize, COL8_FFFFFF, 2, ysize - 24, 2, ysize - 4);
+    boxfill8(vram, xsize, COL8_848484, 3, ysize - 4, 59, ysize - 4);
+    boxfill8(vram, xsize, COL8_848484, 59, ysize - 23, 59, ysize - 5);
+    boxfill8(vram, xsize, COL8_000000, 2, ysize - 3, 59, ysize - 3);
+    boxfill8(vram, xsize, COL8_000000, 60, ysize - 24, 60, ysize - 3);
+
     for (;;) {
         io_hlt();
     }
