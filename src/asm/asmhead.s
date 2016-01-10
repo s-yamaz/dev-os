@@ -119,22 +119,22 @@ GDTR0:
 
 .align 16
 bootpack:
-# + 0 : stack + .data + heapの大きさ(4KBの倍数)
-.int 0x00
-# +4: シグネチャ
-.ascii "Simp"
-# +8: mmareaの大きさ(4KBの倍数)
-.int 0x00
-# +12: スタック初期値 & .data転送先
-.int 0x00310000
-# +16: .dataのサイズ
-.int 0x11a8
-# +20: .dataの初期値列がファルのどこにあるか
-.int 0x10c8
-# +24 +28のセットで1bからの命令がE9 XXXXXXXX(JMP)になり、C言語のエントリポイントへJMP
-# +24: 0xe9000000
-.int 0xe9000000
-# +28: エントリアドレス-0x20
-.int 0x00
-#+32: heap領域(malloc領域)開始アドレス
-.int 0x00
+## + 0 : stack + .data + heapの大きさ(4KBの倍数)
+#.int 0x00
+## +4: シグネチャ
+#.ascii "Simp"
+## +8: mmareaの大きさ(4KBの倍数)
+#.int 0x00
+## +12: スタック初期値 & .data転送先
+#.int 0x00310000
+## +16: .dataのサイズ
+#.int 0x11a8
+## +20: .dataの初期値列がファルのどこにあるか
+#.int 0x10c8
+## +24 +28のセットで1bからの命令がE9 XXXXXXXX(JMP)になり、C言語のエントリポイントへJMP
+## +24: 0xe9000000
+#.int 0xe9000000
+## +28: エントリアドレス-0x20
+#.int 0x00
+##+32: heap領域(malloc領域)開始アドレス
+#.int 0x00

@@ -60,7 +60,7 @@ void SosMain(void) {
 }
 
 void init_palette(void) {
-    unsigned char table_rgb[16 * 3] = {
+    static unsigned char table_rgb[16 * 3] = {
         0x00, 0x00, 0x00,   /* brack */
         0xff, 0x00, 0x00,   /* red */
         0x00, 0xff, 0x00,   /* green */

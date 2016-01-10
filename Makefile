@@ -30,7 +30,7 @@ $(SOSSYS): $(ASRC)/asmhead.s $(ASRC)/func.s $(CSRC)/bootpack.c
 	gcc -m32 $(ASRC)/asmhead.s -nostdlib -T$(HEADLS) -o $(OBJ)/asmhead.bin
 	gcc -m32 $(CSRC)/*.c $(BINOPT) -c -o $(OBJ)/boot.o
 	as --32 $(ASRC)/func.s -o $(OBJ)/func.o
-	ld -static -m elf_i386 -o $(OBJ)/boot.bin -e SosMain --oformat=binary $(OBJ)/boot.o $(OBJ)/func.o
+	ld  -m elf_i386 -o $(OBJ)/boot.bin --script=$(LS)/boot.ls -e SosMain --oformat=binary $(OBJ)/boot.o $(OBJ)/func.o
 	cat $(OBJ)/asmhead.bin $(OBJ)/boot.bin > $(SOSSYS)
 
 $(IPL): $(IPLSRC)
