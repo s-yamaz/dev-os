@@ -6,6 +6,8 @@
 .global io_load_eflags, io_store_eflags
 .global write_mem8
 
+.global load_gdtr, load_idtr
+
 .arch i486
 
 .section .text
@@ -70,4 +72,16 @@ io_store_eflags:
     movl    4(%esp), %eax
     push    %eax
     popfl
+    ret
+
+load_gdtr:
+    movw    4(%esp), %ax    #limit
+    movw    %ax, 6(%esp)
+    lgdtl   6(%esp)
+    ret
+
+load_idtr:
+    movw    4(%esp), %ax
+    movw    %ax, 6(%esp)
+    lidtl   6(%esp)
     ret
