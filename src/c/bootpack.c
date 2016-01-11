@@ -26,6 +26,7 @@ void set_palette(int start, int end, unsigned char *rgb);
 void boxfill8(unsigned char *vram, int xsize,
         unsigned char c, int x0, int y0, int x1, int y1);
 void putfont8(char *vram, int xsize, int x, int y, char c, char *font);
+void putfont8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s);
 void init_screen(char *vram, int xsize, int ysize);
 
 struct BOOTINFO {
@@ -35,24 +36,13 @@ struct BOOTINFO {
 };
 
 void SosMain(void) {
-    char *vram;
-    int xsize, ysize;
-    struct BOOTINFO *binfo;
+    struct BOOTINFO *binfo = (struct BOOTINFO *) 0x0ff0;
 
     init_palette(); /* 色パレットを設定 */
-
-    binfo = (struct BOOTINFO *) 0x0ff0;
-    xsize = (*binfo).scrnx;
-    ysize = (*binfo).scrny;
-    vram = (*binfo).vram;
-
-    char font_A[16] = {
-        0x00, 0x18, 0x18, 0x18, 0x18, 0x24, 0x24, 0x24,
-        0x24, 0x7e, 0x42, 0x42, 0x42, 0xe7, 0x00, 0x00
-    };
-
     init_screen(binfo -> vram, binfo -> scrnx, binfo -> scrny);
-    putfont8(binfo -> vram, binfo -> scrnx, 10, 10, COL8_FFFFFF, font_A);
+    putfont8_asc(binfo -> vram, binfo -> scrnx, 8, 8, COL8_FFFFFF, "ABC 123");
+    putfont8_asc(binfo -> vram, binfo -> scrnx, 31, 31, COL8_000000, "Haribote OS.");
+    putfont8_asc(binfo -> vram, binfo -> scrnx, 30, 30, COL8_FFFFFF, "Haribote OS.");
 
     for (;;) {
         io_hlt();
@@ -145,6 +135,14 @@ void putfont8(char *vram, int xsize, int x, int y, char c, char *font) {
         if( (d & 0x04) != 0) { p[5] = c; }
         if( (d & 0x02) != 0) { p[6] = c; }
         if( (d & 0x01) != 0) { p[7] = c; }
+    }
+    return;
+}
+void putfont8_asc(char *vram, int xsize, int x, int y, char c, unsigned char *s) {
+    extern char hankaku[4096];
+    for(; *s != 0x00 ; s++) {
+        putfont8(vram, xsize, x, y, c, hankaku + *s * 16);
+        x += 8;
     }
     return;
 }
